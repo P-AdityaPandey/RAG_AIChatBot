@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-chatbot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rag_chatbot
+      POSTGRES_USER: raguser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ragpass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - rag_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U raguser -d rag_chatbot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  rag_pgdata:

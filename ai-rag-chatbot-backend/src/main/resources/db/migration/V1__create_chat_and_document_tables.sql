@@ -1,0 +1,4 @@
+CREATE TABLE chat_sessions (id VARCHAR(36) PRIMARY KEY, title VARCHAR(200) NOT NULL, created_at TIMESTAMPTZ NOT NULL, updated_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE chat_messages (id VARCHAR(36) PRIMARY KEY, session_id VARCHAR(36) NOT NULL REFERENCES chat_sessions(id) ON DELETE CASCADE, role VARCHAR(20) NOT NULL, content TEXT NOT NULL, provider VARCHAR(30) NOT NULL DEFAULT 'GEMINI', created_at TIMESTAMPTZ NOT NULL);
+CREATE INDEX idx_messages_session_created ON chat_messages(session_id, created_at);
+CREATE TABLE knowledge_documents (id VARCHAR(36) PRIMARY KEY, file_name VARCHAR(255) NOT NULL, content_type VARCHAR(100) NOT NULL, size_bytes BIGINT NOT NULL, chunk_count INTEGER NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'INDEXED', vector_ids TEXT, created_at TIMESTAMPTZ NOT NULL);

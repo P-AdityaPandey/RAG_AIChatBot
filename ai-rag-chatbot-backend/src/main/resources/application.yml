@@ -1,0 +1,76 @@
+
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: rag-chatbot
+
+  # PostgreSQL Database Configuration
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/rag_chatbot}
+    username: ${DB_USERNAME:raguser}
+    password: ${DB_PASSWORD:Password@123}
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  # Flyway Database Migration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  # File Upload Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 15MB
+      max-request-size: 16MB
+
+  # Spring AI Configuration
+  ai:
+
+    # Google Gemini Chat Model
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+
+        chat:
+          options:
+            model: ${GEMINI_CHAT_MODEL:gemini-2.5-flash}
+
+        # Google Gemini Embedding Model
+        embedding:
+          api-key: ${GEMINI_API_KEY}
+          text:
+            options:
+              model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}
+              dimensions: 768
+              task-type: RETRIEVAL_DOCUMENT
+              auto-truncate: true
+
+    # PostgreSQL PGVector Configuration
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 768
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.ai: INFO
+    org.springframework.ai.vectorstore: DEBUG
+    org.springframework.jdbc: INFO
+    org.hibernate.SQL: INFO
+    com.example.ragchatbot: DEBUG
